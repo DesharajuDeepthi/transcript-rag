@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=40"]
+# "setuptools.backends.legacy:build" (setuptools>=64) is identical to
+# "setuptools.build_meta" — use the compatible form so pip<21.3 / setuptools<64
+# work alongside Docker (Python 3.11+).
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "transcript-intelligence"
+version = "0.1.0"
+requires-python = ">=3.10"   # PEP 604 unions (X | None) are evaluated at runtime; 3.9 fails on import
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*", "mcp_server*"]

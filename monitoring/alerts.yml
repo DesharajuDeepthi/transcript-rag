@@ -1,0 +1,157 @@
+# Alert and release-gate thresholds for the RAG system.
+#
+# Read by:
+#   src/monitor.py    — live traffic (traces + sampled online evals + user feedback)
+#   src/eval_gate.py  — offline golden-set gate (blocks a release)
+#
+# All rates and percentages are on a 0–100 scale.
+# Alerts use rolling windows and minimum sample counts — never a single answer.
+
+version: 1
+
+windows:
+  current_hours: 24        # window being judged
+  baseline_days: 7         # trailing window it is compared against
+
+# Every rule is evaluated overall AND per value of each dimension below,
+# so a regression that only hits support users or date questions still fires.
+segment_by:
+  - tenant_id
+  - role
+  - query_category
+  - temporal_mode
+  - generation_model
+  - prompt_version
+  - index_version
+
+# ── Page immediately: any single occurrence in the current window ─────────────
+# Raised from the deterministic checks that run inline on every request.
+page:
+  - check: tenant_violation      # a chunk from another tenant was returned
+  - check: rbac_violation        # a chunk outside the caller's role was returned
+  - check: severe_pii            # SSN / card number appeared in an answer
+
+# ── Warn: trend rules ─────────────────────────────────────────────────────────
+# kind:
+#   below               current < threshold
+#   above               current > threshold
+#   drop_pp_vs_baseline baseline - current > threshold (percentage points)
+#   ratio_vs_baseline   current / baseline > threshold
+warn:
+  - name: groundedness_drop
+    metric: groundedness
+    kind: drop_pp_vs_baseline
+    threshold: 5
+    min_samples: 100
+
+  - name: citation_precision_low
+    metric: citation_precision
+    kind: below
+    threshold: 98
+    min_samples: 50
+
+  - name: negative_feedback_spike
+    metric: negative_feedback_rate
+    kind: ratio_vs_baseline
+    threshold: 1.5
+    min_samples: 50
+
+  - name: refusal_rate_doubled
+    metric: refusal_rate
+    kind: ratio_vs_baseline
+    threshold: 2.0
+    min_samples: 100
+
+  - name: empty_retrieval_doubled
+    metric: empty_retrieval_rate
+    kind: ratio_vs_baseline
+    threshold: 2.0
+    min_samples: 100
+
+  - name: context_relevance_drop
+    metric: context_relevance
+    kind: drop_pp_vs_baseline
+    threshold: 10
+    min_samples: 100
+
+  - name: p95_latency_up
+    metric: p95_latency_ms
+    kind: ratio_vs_baseline
+    threshold: 1.3
+    min_samples: 100
+
+  - name: cost_per_query_up
+    metric: avg_cost_usd
+    kind: ratio_vs_baseline
+    threshold: 1.3
+    min_samples: 100
+
+  - name: answers_cut_off
+    metric: truncation_rate           # answer hit the output-token cap even after the retry
+    kind: above
+    threshold: 1
+    min_samples: 50
+
+  # ── temporal correctness ──
+  - name: as_of_leakage
+    metric: as_of_leakage_rate        # sources from outside an as-of / period window
+    kind: above
+    threshold: 0
+    min_samples: 20
+
+  - name: account_mixing
+    metric: account_mixing_rate       # another customer's call in an account question
+    kind: above
+    threshold: 1
+    min_samples: 50
+
+  - name: stale_revision_used
+    metric: stale_revision_rate       # superseded transcript revision used without being asked
+    kind: above
+    threshold: 0
+    min_samples: 20
+
+  - name: stale_answer_rate_high
+    metric: stale_answer_rate         # online judge: old status presented as current
+    kind: above
+    threshold: 5
+    min_samples: 50
+
+  - name: latest_selection_drop
+    metric: latest_is_newest_rate     # newest eligible call chosen as "current"
+    kind: drop_pp_vs_baseline
+    threshold: 10
+    min_samples: 50
+
+  - name: account_ambiguity_up
+    metric: account_ambiguous_rate
+    kind: ratio_vs_baseline
+    threshold: 2.0
+    min_samples: 50
+
+  - name: index_stale
+    metric: index_age_hours
+    kind: above
+    threshold: 24          # ingestion SLA
+    min_samples: 0
+    overall_only: true
+
+# ── Release gate: offline golden set (src/eval_gate.py) ───────────────────────
+# Any failure exits non-zero, which blocks the CI job / deployment.
+release_gate:
+  hit_at_k_min: 95
+  mrr_max_drop_pp: 5
+  faithfulness_min: 95
+  answer_correctness_max_drop_pp: 2      # vs the approved baseline
+  abstention_accuracy_min: 90
+  security_violations_max: 0             # any cross-tenant or RBAC leak fails the gate
+  grader_errors_max: 0
+  run_errors_max: 0                      # empty / failed generations
+  truncated_answers_max: 0               # answers cut off by the output-token cap
+  # temporal (only checked when the golden set has temporal labels)
+  temporal_intent_accuracy_min: 90
+  account_resolution_accuracy_min: 95
+  latest_selection_accuracy_min: 90
+  as_of_leakage_rate_max: 0
+  account_mixing_rate_max: 0
+  stale_answer_rate_max: 0

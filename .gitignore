@@ -1,0 +1,49 @@
+# Environment
+.env
+*.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+dist/
+build/
+
+# Jupyter
+.ipynb_checkpoints/
+notebooks/.ipynb_checkpoints/
+
+# Data (large dataset — not committed)
+#data/dataset/
+
+# Node
+slides/node_modules/
+slides/package-lock.json
+
+# macOS
+.DS_Store
+
+# Outputs (generated files — optional to commit)
+outputs/charts/
+outputs/*.csv
+outputs/*.json
+
+# Audit log (runtime file)
+mcp_server/audit.log
+
+# Unpacked pptx working directory
+slides/unpacked/
+slides/slide-*.jpg
+slides/transcript_intelligence.pdf
+docker commands 
+
+# Vector index + runtime telemetry (may contain customer data — never commit)
+data/chroma/
+outputs/traces/
+outputs/monitoring/
+
+# Local backups / editor state
+*.bak
+.claude/

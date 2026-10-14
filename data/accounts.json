@@ -1,0 +1,390 @@
+{
+  "version": 1,
+  "accounts": [
+    {
+      "account_id": "atlas-precision",
+      "name": "Atlas Precision",
+      "domains": [
+        "atlasprecision.com"
+      ],
+      "aliases": [
+        "atlas",
+        "atlas precision",
+        "atlasprecision"
+      ]
+    },
+    {
+      "account_id": "axiom-labs",
+      "name": "Axiom Labs",
+      "domains": [
+        "axiomlabs.dev"
+      ],
+      "aliases": [
+        "axiom",
+        "axiom labs",
+        "axiomlabs"
+      ]
+    },
+    {
+      "account_id": "blackridge-investments",
+      "name": "Blackridge Investments",
+      "domains": [
+        "blackridgeinvest.com"
+      ],
+      "aliases": [
+        "blackridge",
+        "blackridge investments",
+        "blackridgeinvest"
+      ]
+    },
+    {
+      "account_id": "bridgeport-health",
+      "name": "Bridgeport Health",
+      "domains": [
+        "bridgeporthealth.com"
+      ],
+      "aliases": [
+        "bridgeport",
+        "bridgeport health",
+        "bridgeporthealth"
+      ]
+    },
+    {
+      "account_id": "brightpath-commerce",
+      "name": "Brightpath Commerce",
+      "domains": [
+        "brightpathcommerce.com"
+      ],
+      "aliases": [
+        "brightpath",
+        "brightpath commerce",
+        "brightpathcommerce"
+      ]
+    },
+    {
+      "account_id": "clearwater-medical",
+      "name": "Clearwater Medical",
+      "domains": [
+        "clearwatermed.com"
+      ],
+      "aliases": [
+        "clearwater",
+        "clearwater medical",
+        "clearwatermed"
+      ]
+    },
+    {
+      "account_id": "coastal-living-co",
+      "name": "Coastal Living Co",
+      "domains": [
+        "coastalliving.com"
+      ],
+      "aliases": [
+        "coastal",
+        "coastal living",
+        "coastal living co",
+        "coastalliving"
+      ]
+    },
+    {
+      "account_id": "cobalt-software",
+      "name": "Cobalt Software",
+      "domains": [
+        "cobaltsoftware.com"
+      ],
+      "aliases": [
+        "cobalt",
+        "cobalt software",
+        "cobaltsoftware"
+      ]
+    },
+    {
+      "account_id": "crestline-wealth",
+      "name": "Crestline Wealth",
+      "domains": [
+        "crestlinewealth.com"
+      ],
+      "aliases": [
+        "crestline",
+        "crestline wealth",
+        "crestlinewealth"
+      ]
+    },
+    {
+      "account_id": "forge-industries",
+      "name": "Forge Industries",
+      "domains": [
+        "forgeindustries.com"
+      ],
+      "aliases": [
+        "forge",
+        "forge industries",
+        "forgeindustries"
+      ]
+    },
+    {
+      "account_id": "frostbyte-ai",
+      "name": "Frostbyte AI",
+      "domains": [
+        "frostbyte.ai"
+      ],
+      "aliases": [
+        "frostbyte",
+        "frostbyte ai"
+      ]
+    },
+    {
+      "account_id": "harborview-banking",
+      "name": "Harborview Banking",
+      "domains": [
+        "harborviewbank.com"
+      ],
+      "aliases": [
+        "harborview",
+        "harborview banking",
+        "harborviewbank"
+      ]
+    },
+    {
+      "account_id": "helix-data",
+      "name": "Helix Data",
+      "domains": [
+        "helixdata.io"
+      ],
+      "aliases": [
+        "helix",
+        "helix data",
+        "helixdata"
+      ]
+    },
+    {
+      "account_id": "ironclad-financial",
+      "name": "Ironclad Financial",
+      "domains": [
+        "ironcladfinancial.com"
+      ],
+      "aliases": [
+        "ironclad",
+        "ironclad financial",
+        "ironcladfinancial"
+      ]
+    },
+    {
+      "account_id": "ironworks-corp",
+      "name": "Ironworks Corp",
+      "domains": [
+        "ironworkscorp.com"
+      ],
+      "aliases": [
+        "ironworks",
+        "ironworks corp",
+        "ironworkscorp"
+      ]
+    },
+    {
+      "account_id": "keystone-health",
+      "name": "Keystone Health",
+      "domains": [
+        "keystonehealth.com"
+      ],
+      "aliases": [
+        "keystone",
+        "keystone health",
+        "keystonehealth"
+      ]
+    },
+    {
+      "account_id": "maplewood-goods",
+      "name": "Maplewood Goods",
+      "domains": [
+        "maplewoodgoods.com"
+      ],
+      "aliases": [
+        "maplewood",
+        "maplewood goods",
+        "maplewoodgoods"
+      ]
+    },
+    {
+      "account_id": "meridian-capital",
+      "name": "Meridian Capital",
+      "domains": [
+        "meridiancapital.com"
+      ],
+      "aliases": [
+        "meridian",
+        "meridian capital",
+        "meridiancapital"
+      ]
+    },
+    {
+      "account_id": "nimbus-platform",
+      "name": "Nimbus Platform",
+      "domains": [
+        "nimbusplatform.com"
+      ],
+      "aliases": [
+        "nimbus",
+        "nimbus platform",
+        "nimbusplatform"
+      ]
+    },
+    {
+      "account_id": "northstar-pharma",
+      "name": "Northstar Pharma",
+      "domains": [
+        "northstarpharma.com"
+      ],
+      "aliases": [
+        "northstar",
+        "northstar pharma",
+        "northstarpharma"
+      ]
+    },
+    {
+      "account_id": "nova-retail-group",
+      "name": "Nova Retail Group",
+      "domains": [
+        "novaretail.com"
+      ],
+      "aliases": [
+        "nova",
+        "nova retail",
+        "nova retail group",
+        "novaretail"
+      ]
+    },
+    {
+      "account_id": "pineridge-systems",
+      "name": "Pineridge Systems",
+      "domains": [
+        "pineridge.io"
+      ],
+      "aliases": [
+        "pineridge",
+        "pineridge systems"
+      ]
+    },
+    {
+      "account_id": "pinnacle-insurance",
+      "name": "Pinnacle Insurance",
+      "domains": [
+        "pinnacleins.com"
+      ],
+      "aliases": [
+        "pinnacle",
+        "pinnacle insurance",
+        "pinnacleins"
+      ]
+    },
+    {
+      "account_id": "quantum-edge",
+      "name": "Quantum Edge",
+      "domains": [
+        "quantumedge.com"
+      ],
+      "aliases": [
+        "quantum",
+        "quantum edge",
+        "quantumedge"
+      ]
+    },
+    {
+      "account_id": "redwood-clinical",
+      "name": "Redwood Clinical",
+      "domains": [
+        "redwoodclinical.com"
+      ],
+      "aliases": [
+        "redwood",
+        "redwood clinical",
+        "redwoodclinical"
+      ]
+    },
+    {
+      "account_id": "ridgeline-logistics",
+      "name": "Ridgeline Logistics",
+      "domains": [
+        "ridgelinelogistics.com"
+      ],
+      "aliases": [
+        "ridgeline",
+        "ridgeline logistics",
+        "ridgelinelogistics"
+      ]
+    },
+    {
+      "account_id": "silverline-brands",
+      "name": "Silverline Brands",
+      "domains": [
+        "silverlinebrands.com"
+      ],
+      "aliases": [
+        "silverline",
+        "silverline brands",
+        "silverlinebrands"
+      ]
+    },
+    {
+      "account_id": "steelpoint-manufacturing",
+      "name": "Steelpoint Manufacturing",
+      "domains": [
+        "steelpointmfg.com"
+      ],
+      "aliases": [
+        "steelpoint",
+        "steelpoint manufacturing",
+        "steelpointmfg"
+      ]
+    },
+    {
+      "account_id": "stratos-cloud",
+      "name": "Stratos Cloud",
+      "domains": [
+        "stratoscloud.io"
+      ],
+      "aliases": [
+        "stratos",
+        "stratos cloud",
+        "stratoscloud"
+      ]
+    },
+    {
+      "account_id": "summit-trust",
+      "name": "Summit Trust",
+      "domains": [
+        "summittrust.com"
+      ],
+      "aliases": [
+        "summit",
+        "summit trust",
+        "summittrust"
+      ]
+    },
+    {
+      "account_id": "trailhead-marketplace",
+      "name": "Trailhead Marketplace",
+      "domains": [
+        "trailheadmkt.com"
+      ],
+      "aliases": [
+        "trailhead",
+        "trailhead marketplace",
+        "trailheadmkt"
+      ]
+    },
+    {
+      "account_id": "vanta-health-systems",
+      "name": "Vanta Health Systems",
+      "domains": [
+        "vantahealth.com"
+      ],
+      "aliases": [
+        "vanta",
+        "vanta health",
+        "vanta health systems",
+        "vantahealth"
+      ]
+    }
+  ]
+}

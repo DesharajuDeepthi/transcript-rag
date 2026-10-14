@@ -1,0 +1,161 @@
+# Shared dataset + output mounts reused across services
+x-data-volumes: &data-volumes
+  - ./src:/app/src
+  - ./data/dataset:/app/data/dataset:ro   # local copy; override with abs path if needed
+  - ./data/chroma:/app/data/chroma        # persisted vector index
+  - ./data/accounts.json:/app/data/accounts.json   # account registry (stable account_ids)
+  - ./outputs:/app/outputs
+
+services:
+
+  # ── RAG chatbot (interactive terminal) ──────────────────────────────────────
+  rag:
+    build: .
+    image: transcript-intelligence:latest
+    env_file: .env
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DATASET_DIR=/app/data/dataset
+      - CHROMA_DIR=/app/data/chroma
+      - TENANT_ID=${TENANT_ID:-aegis}   # multi-tenant: set in .env or override at runtime
+      - AUTH_MODE=${AUTH_MODE:-dev}   # local demo: allows --email login; use token mode + JWT_SECRET for real use
+    volumes: *data-volumes
+    stdin_open: true   # keeps stdin open so the chat loop works
+    tty: true          # allocates a pseudo-TTY for colored output
+    command: python -m src.rag_chat
+
+  # ── Build index only (run once, or with --reset) ────────────────────────────
+  rag-index:
+    build: .
+    image: transcript-intelligence:latest
+    env_file: .env
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DATASET_DIR=/app/data/dataset
+      - CHROMA_DIR=/app/data/chroma
+      - TENANT_ID=${TENANT_ID:-aegis}
+    volumes: *data-volumes
+    command: python -m src.rag_index --tenant ${TENANT_ID:-aegis}
+
+  # ── MCP server ───────────────────────────────────────────────────────────────
+  mcp:
+    build: .
+    image: transcript-intelligence:latest
+    container_name: transcript-intelligence
+    env_file: .env
+    environment:
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./src:/app/src
+      - ./mcp_server:/app/mcp_server
+      - ./scripts:/app/scripts
+      - ./data/dataset:/app/data/dataset:ro
+      - ./outputs:/app/outputs
+    command: sleep infinity
+
+  # ── Analytics pipeline ───────────────────────────────────────────────────────
+  pipeline:
+    build: .
+    image: transcript-intelligence:latest
+    env_file: .env
+    volumes: *data-volumes
+    command: >
+      bash -c "
+        python -m src.loader &&
+        python -m src.categorize &&
+        python -m src.sentiment &&
+        python -m src.churn_scorer &&
+        python -m src.action_tracker &&
+        python -m src.topic_analyzer
+      "
+
+  # ── Jupyter notebook ─────────────────────────────────────────────────────────
+  jupyter:
+    build: .
+    image: transcript-intelligence:latest
+    env_file: .env
+    ports:
+      - "8888:8888"
+    volumes: *data-volumes
+    command: >
+      jupyter notebook
+        --ip=0.0.0.0 --port=8888 --no-browser --allow-root
+        --notebook-dir=/app/notebooks
+        --NotebookApp.token='' --NotebookApp.password=''
+
+  # ── Tests ────────────────────────────────────────────────────────────────────
+  test:
+    build: .
+    image: transcript-intelligence:latest
+    volumes:
+      - ./src:/app/src
+      - ./tests:/app/tests
+      - ./data:/app/data:ro              # accounts.json, golden sets, dataset
+      - ./monitoring:/app/monitoring:ro
+    command: pytest tests/ -v
+
+  # ── Run golden set through RAG (saves eval_results.json) ──────────────────
+  eval-run:
+    build: .
+    image: transcript-intelligence:latest
+    env_file: .env
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DATASET_DIR=/app/data/dataset
+      - CHROMA_DIR=/app/data/chroma
+      - TENANT_ID=${TENANT_ID:-aegis}
+    volumes:
+      - ./src:/app/src
+      - ./data:/app/data
+      - ./data/chroma:/app/data/chroma
+      - ./outputs:/app/outputs
+    command: python -m src.eval_run --golden /app/data/evals/golden-v3.json --out /app/outputs/eval_results.json --tenant ${TENANT_ID:-aegis}
+
+  # ── Compare results vs golden and print metrics ────────────────────────────
+  eval-compare:
+    build: .
+    image: transcript-intelligence:latest
+    env_file: .env
+    environment:
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./src:/app/src
+      - ./data:/app/data
+      - ./outputs:/app/outputs
+    command: python -m src.eval_compare --results /app/outputs/eval_results.json --out /app/outputs/eval_report.json
+
+  # ── Release gate: fail (exit 1) if the golden-set report regressed ───────────
+  eval-gate:
+    build: .
+    image: transcript-intelligence:latest
+    volumes:
+      - ./src:/app/src
+      - ./data:/app/data
+      - ./outputs:/app/outputs
+      - ./monitoring:/app/monitoring
+    command: python -m src.eval_gate --report /app/outputs/eval_report.json
+
+  # ── Reference-free evaluation of sampled live traces (run on a schedule) ────
+  online-eval:
+    build: .
+    image: transcript-intelligence:latest
+    env_file: .env
+    environment:
+      - PYTHONUNBUFFERED=1
+      - CHROMA_DIR=/app/data/chroma
+    volumes:
+      - ./src:/app/src
+      - ./data/chroma:/app/data/chroma
+      - ./outputs:/app/outputs
+    command: python -m src.online_eval
+
+  # ── Live metrics + alert rules (monitoring/alerts.yml) ───────────────────────
+  monitor:
+    build: .
+    image: transcript-intelligence:latest
+    volumes:
+      - ./src:/app/src
+      - ./data/chroma:/app/data/chroma:ro
+      - ./outputs:/app/outputs
+      - ./monitoring:/app/monitoring
+    command: python -m src.monitor --chroma-dir /app/data/chroma --json /app/outputs/monitoring/report.json
